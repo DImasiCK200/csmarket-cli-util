@@ -58,7 +58,51 @@ export const summarizeDailyPrices = (prices) => {
   return calculateProperties(groupPricesByDay(prices));
 };
 
-export const concatPrices = (newPrices, oldPrices) => ({
-  ...newPrices,
-  ...oldPrices,
-});
+export const getOverlaps = (firstArray, secondArray) => {
+  const secondArraySet = new Set(secondArray);
+
+  return new Set(firstArray.filter((item) => secondArraySet.has(item)));
+};
+
+export const copyUniqueDates = (sourcePrices, overlapDates, targetPrices) => {
+  Object.keys(sourcePrices).forEach((date) => {
+    if (!overlapDates.has(date)) {
+      targetPrices[date] = { ...sourcePrices[date] };
+    }
+  });
+};
+
+export const getAverageProperties = (newPrice, oldPrice) => {
+  const unitedPrice = {};
+
+  Object.keys(newPrice).forEach((key) => {
+    if (key === "count") {
+      unitedPrice[key] = Math.floor((newPrice[key] + oldPrice[key]) / 2);
+    } else {
+      unitedPrice[key] = Number(
+        ((newPrice[key] + oldPrice[key]) / 2).toFixed(2),
+      );
+    }
+  });
+
+  return unitedPrice;
+};
+
+export const concatPrices = (newPrices, oldPrices) => {
+  const unitedPrices = {};
+
+  const overlapDates = getOverlaps(
+    Object.keys(newPrices),
+    Object.keys(oldPrices),
+  );
+
+  copyUniqueDates(newPrices, overlapDates, unitedPrices);
+
+  overlapDates.forEach((date) => {
+    unitedPrices[date] = getAverageProperties(newPrices[date], oldPrices[date]);
+  });
+
+  copyUniqueDates(oldPrices, overlapDates, unitedPrices);
+
+  return unitedPrices;
+};
