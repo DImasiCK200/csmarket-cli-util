@@ -17,7 +17,7 @@ export const initStorage = async () => {
 };
 
 export const getSavedPrices = async (itemName) => {
-  return await priceStorage.getItem(itemName);
+  return (await priceStorage.getItem(itemName)) || {};
 };
 
 export const savePrices = async (itemName, prices) => {
@@ -25,11 +25,11 @@ export const savePrices = async (itemName, prices) => {
 };
 
 export const getFollowedItems = async () => {
-  return await followedItemsStorage.keys();
+  return (await followedItemsStorage.keys()) || {};
 };
 
 export const getFollowedItemId = async (itemName) => {
-  return await followedItemsStorage.getItem(itemName);
+  return (await followedItemsStorage.getItem(itemName)) || {};
 };
 
 export const addFollowedItem = async (itemName) => {
