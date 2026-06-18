@@ -1,11 +1,13 @@
 import storage from "node-persist";
 
+import { getItemId } from "./marketService.js";
+
 const priceStorage = storage.create({
-  dir: "prices",
+  dir: "./storage/prices",
 });
 
 const followedItemsStorage = storage.create({
-  dir: "followedItems",
+  dir: "./storage/followedItems",
 });
 
 export const initStorage = async () => {
@@ -23,17 +25,15 @@ export const savePrices = async (itemName, prices) => {
 };
 
 export const getFollowedItems = async () => {
-  return await followedItemsStorage.getItem("followedItems");
+  return await followedItemsStorage.keys();
+};
+
+export const getFollowedItemId = async (itemName) => {
+  return await followedItemsStorage.getItem(itemName);
 };
 
 export const addFollowedItem = async (itemName) => {
-  const currentFollowedItems = await getFollowedItems();
-  const alreadyFollowed = currentFollowedItems.includes(itemName);
+  const itemId = await getItemId(itemName);
 
-  if (alreadyFollowed) {
-    return;
-  }
-  const newFollowedItems = [...currentFollowedItems, itemName];
-
-  await followedItemsStorage.setItem("followedItems", newFollowedItems);
+  await followedItemsStorage.setItem(itemName, itemId);
 };

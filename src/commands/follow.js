@@ -1,10 +1,4 @@
-import {
-  addFollowedItem,
-  getSavedPrices,
-  savePrices,
-} from "../services/storageService.js";
-import { getPriceHistory } from "../services/marketService.js";
-import { concatPrices } from "../utils/prices.js";
+import { addFollowedItem } from "../services/storageService.js";
 
 export const registerFollowCommand = async (program, beforeEach) => {
   program

@@ -2,6 +2,7 @@
 import { program } from "commander";
 import { initStorage } from "./src/services/storageService.js";
 import { registerFetchCommand } from "./src/commands/fetch.js";
+import { registerFollowCommand } from "./src/commands/follow.js";
 
 program
   .name("cs-market-util")
@@ -14,5 +15,6 @@ const beforeEach = async (action) => {
 };
 
 registerFetchCommand(program, beforeEach);
+registerFollowCommand(program, beforeEach);
 
 program.parse();
