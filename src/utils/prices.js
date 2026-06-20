@@ -73,17 +73,8 @@ export const copyUniqueDates = (sourcePrices, overlapDates, targetPrices) => {
 };
 
 export const getAverageProperties = (newPrice, oldPrice) => {
-  const unitedPrice = {};
-
-  Object.keys(newPrice).forEach((key) => {
-    if (key === "count") {
-      unitedPrice[key] = Math.floor((newPrice[key] + oldPrice[key]) / 2);
-    } else {
-      unitedPrice[key] = Number(
-        ((newPrice[key] + oldPrice[key]) / 2).toFixed(2),
-      );
-    }
-  });
+  const unitedPrice =
+    newPrice.count > oldPrice.count ? { ...newPrice } : { ...oldPrice };
 
   return unitedPrice;
 };

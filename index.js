@@ -5,6 +5,10 @@ import { registerFetchCommand } from "./src/commands/fetch.js";
 import { registerFollowCommand } from "./src/commands/follow.js";
 import { registerShowCommand } from "./src/commands/stat.js";
 
+program.configureOutput({
+  writeErr: (str) => console.log(`[Критическая ошибка]: ${str}`),
+});
+
 program
   .name("cs-market-util")
   .description("CLI утилита для парсинга и анализа рынка CS market")

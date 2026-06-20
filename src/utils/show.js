@@ -12,3 +12,9 @@ export const showStat = (priceHistory, { maxShow } = {}) => {
 
   console.table(tableData);
 };
+
+export const showList = (list) => {
+  list.forEach((item, n) => {
+    console.log(`${n + 1}) ${item}`);
+  });
+};
