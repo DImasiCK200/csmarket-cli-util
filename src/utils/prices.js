@@ -1,3 +1,5 @@
+import { formatSteamDate } from "./date.js";
+
 export const convertPriceArrays = (priceArray) => {
   return {
     timestamp: priceArray[0],
@@ -96,4 +98,34 @@ export const concatPrices = (newPrices, oldPrices) => {
   copyUniqueDates(oldPrices, overlapDates, unitedPrices);
 
   return unitedPrices;
+};
+
+export const groupPricesSteam = (prices) => {
+  const groupedPrices = {};
+
+  prices.forEach((priceInfo) => {
+    const date = formatSteamDate(priceInfo[0]);
+
+    if (!groupedPrices[date]) {
+      groupedPrices[date] = { avg: [], count: [] };
+    }
+
+    groupedPrices[date].avg.push(priceInfo[1]);
+    groupedPrices[date].count.push(Number(priceInfo[2]));
+  });
+
+  const sum = (array) => array.reduce((sum, item) => sum + item, 0);
+
+  Object.keys(groupedPrices).forEach((date) => {
+    groupedPrices[date] = {
+      avg: Number(
+        (sum(groupedPrices[date].avg) / groupedPrices[date].avg.length).toFixed(
+          2,
+        ),
+      ),
+      count: Math.floor(sum(groupedPrices[date].count)),
+    };
+  });
+
+  return groupedPrices;
 };

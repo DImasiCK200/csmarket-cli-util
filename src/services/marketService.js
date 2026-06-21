@@ -17,6 +17,7 @@ export const getPriceHistory = async (marketHashName) => {
   const prices = response.data.data.history.map((priceInfo) => {
     return convertPriceArrays(priceInfo);
   });
+
   // console.log(
   //   prices.slice(0, 5).map((item) => ({
   //     ...item,
