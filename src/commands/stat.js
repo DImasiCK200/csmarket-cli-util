@@ -3,6 +3,7 @@ import {
   getFollowedItems,
   getSavedPrices,
 } from "../services/storageService.js";
+import { getPriceHistory } from "../services/steamService.js";
 
 export const registerShowCommand = async (program, beforeEach) => {
   program
@@ -15,16 +16,49 @@ export const registerShowCommand = async (program, beforeEach) => {
     .action((itemName, { maxShow, stat, followed }) =>
       beforeEach(async () => {
         if (itemName) {
-          const prices = await getSavedPrices(itemName);
+          const pricesMarket = await getSavedPrices(itemName);
+          const pricesSteam = await getPriceHistory(itemName);
 
-          if (Object.keys(prices).length === 0) {
+          const concatenateObjectsByDate = (objectMarket, objectSteam) => {
+            const result = {};
+
+            Object.keys(objectMarket).forEach((date) => {
+              const dataMarket = objectMarket[date];
+              const dataSteam = objectSteam[date];
+
+              result[date] = {
+                marketAVG: dataMarket.avg,
+                marketMedian: dataMarket.median,
+                marketCount: dataMarket.count,
+
+                steamAVG: dataSteam.avg,
+                steamCount: dataSteam.count,
+
+                difference: Number(
+                  (
+                    ((dataSteam.avg - dataMarket.avg) / dataMarket.avg) *
+                    100
+                  ).toFixed(2),
+                ),
+              };
+            });
+
+            return result;
+          };
+
+          const concatenatedPrices = concatenateObjectsByDate(
+            pricesMarket,
+            pricesSteam,
+          );
+
+          if (Object.keys(concatenatedPrices).length === 0) {
             console.log("Кажется данных об этом предмете нет в хранилище");
             return;
           }
 
           if (stat) {
             console.log(`\n📊 История цен для: ${itemName}\n`);
-            showStat(prices, { maxShow });
+            showStat(concatedPrices, { maxShow });
           }
 
           return;
